@@ -6,7 +6,8 @@ class StudentManagement extends Component {
     this.state = {
       name: '',
       grade: '',
-      students: []
+      students: [],
+      editingIndex: -1,
     };
   }
 
@@ -18,15 +19,28 @@ class StudentManagement extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { name, grade, students } = this.state;
+    const { name, grade, students, editingIndex } = this.state;
     if (name.trim() !== '' && grade.trim() !== '') {
       const studentInfo = { name, grade };
       
-      this.setState({
-        name: '',
-        grade: '',
-        students: [...students, studentInfo]
-      });
+      if (editingIndex !== -1) {
+        // Editing an existing student
+        const updatedStudents = [...students];
+        updatedStudents[editingIndex] = studentInfo;
+        this.setState({
+          name: '',
+          grade: '',
+          students: updatedStudents,
+          editingIndex: -1,
+        });
+      } else {
+        // Adding a new student
+        this.setState({
+          name: '',
+          grade: '',
+          students: [...students, studentInfo]
+        });
+      }
     }
   };
 
@@ -38,8 +52,17 @@ class StudentManagement extends Component {
     });
   };
 
+  handleEdit = (index) => {
+    const studentToEdit = this.state.students[index];
+    this.setState({
+      name: studentToEdit.name,
+      grade: studentToEdit.grade,
+      editingIndex: index,
+    });
+  };
+
   render() {
-    const { name, grade, students } = this.state;
+    const { name, grade, students, editingIndex } = this.state;
     return (
       <div>
         <h2>Students List</h2>
@@ -58,13 +81,13 @@ class StudentManagement extends Component {
             value={grade}
             onChange={this.handleChange}
           />   
-          
-          <button type="submit">Add Student</button>
+          <button type="submit">{editingIndex !== -1 ? 'Update Student' : 'Add Student'}</button>
         </form>
         <ul>
           {students.map((student, index) => (
             <li key={index}>
               Name: {student.name}, Grade: {student.grade}
+              <button onClick={() => this.handleEdit(index)}>Edit</button>
               <button onClick={() => this.handleDelete(index)}>Delete</button>
             </li>
           ))}
@@ -75,3 +98,7 @@ class StudentManagement extends Component {
 }
 
 export default StudentManagement;
+
+
+
+
