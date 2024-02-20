@@ -57,7 +57,16 @@ class StudentManagement extends Component {
             placeholder="Enter Grade"
             value={grade}
             onChange={this.handleChange}
-          />
+          />    
+
+
+
+
+
+
+
+
+          
           
           <button type="submit">Add Student</button>
         </form>
